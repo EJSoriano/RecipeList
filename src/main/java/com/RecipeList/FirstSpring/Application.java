@@ -23,6 +23,7 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
     	
+    	/*
     	ingredientRepo.deleteAllInBatch();
 		recipeRepo.deleteAllInBatch();
 		
@@ -39,6 +40,7 @@ public class Application implements CommandLineRunner {
 		ing2.getRecipes().add(recipe1);
 		
 		recipeRepo.save(recipe1);
-		
+		*/
+    	
     }
 }

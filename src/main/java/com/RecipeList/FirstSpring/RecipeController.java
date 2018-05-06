@@ -32,4 +32,6 @@ public class RecipeController {
 	public void deleteRecipe(@RequestParam(value="id") Long id) {
 		repRepo.deleteById(id);
 	}
+	
+	
 }
