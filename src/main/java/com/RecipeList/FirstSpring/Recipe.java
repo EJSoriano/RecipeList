@@ -30,8 +30,8 @@ public class Recipe {
 	        CascadeType.MERGE
         })
     @JoinTable(name = "recipe_ingredients", 
-    	joinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName="ingredient_id"), 
-    	inverseJoinColumns = @JoinColumn(name = "recipe_id", referencedColumnName="recipe_id"))
+    	joinColumns = @JoinColumn(name = "ingredient_id"), 
+    	inverseJoinColumns = @JoinColumn(name = "recipe_id"))
 	private Set<Ingredient> ingredients = new HashSet<>();
 
 	protected Recipe() {
