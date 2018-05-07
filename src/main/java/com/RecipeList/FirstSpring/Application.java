@@ -5,6 +5,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+/*
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(Application.class, args);
+    }
+    
+}
+*/
 
 @SpringBootApplication
 @ComponentScan("module-service")
@@ -23,24 +33,22 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
     	
-    	/*
+    	
     	ingredientRepo.deleteAllInBatch();
 		recipeRepo.deleteAllInBatch();
 		
-		Ingredient ing1 = new Ingredient("Fettucine");
-		Ingredient ing2 = new Ingredient("Alfredo Sauce");
+		Ingredient ing1 = new Ingredient("Chicken Breast");
+		Ingredient ing2 = new Ingredient("Terriyaki Sauce");
 		
 		
-		Recipe recipe1 = new Recipe("Chicken Alfredo");
+		Recipe recipe1 = new Recipe("Terryaki Chicken");
 		
 		recipe1.getIngredients().add(ing1);
 		recipe1.getIngredients().add(ing2);
-		
-		ing1.getRecipes().add(recipe1);
-		ing2.getRecipes().add(recipe1);
+	
 		
 		recipeRepo.save(recipe1);
-		*/
+		
     	
     }
 }

@@ -20,10 +20,7 @@ public class Ingredient {
 	@NotNull
     @NaturalId
 	private String ingredientName;
-	@ManyToMany(fetch = FetchType.LAZY, 
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE }, 
-			mappedBy = "ingredients")
-	private Set<Recipe> recipes = new HashSet<>();
+
 
 	protected Ingredient() {
 	}
@@ -48,9 +45,6 @@ public class Ingredient {
 		this.ingredientName = ingredient_name;
 	}
 
-	public Set<Recipe> getRecipes() {
-		return recipes;
-	}
 
 	@Override
 	public String toString() {

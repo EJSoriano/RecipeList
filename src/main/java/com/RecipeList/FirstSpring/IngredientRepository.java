@@ -7,7 +7,6 @@ import java.util.*;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
 	
-	
 	Ingredient findByIngredientName(String ingredient_name);
 	
 }
