@@ -32,7 +32,7 @@ public class Recipe {
     @JoinTable(name = "recipe_ingredients", 
     	joinColumns = @JoinColumn(name = "ingredient_id"), 
     	inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-	private Set<Ingredient> ingredients = new HashSet<>();
+	private List<Ingredient> ingredients = new ArrayList<>();
 
 	protected Recipe() {
 	}
@@ -70,11 +70,11 @@ public class Recipe {
 		}
 	}
 
-    public Set<Ingredient> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
     
-	public void setIngredients(Set<Ingredient> ingredients) {
+	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
 	

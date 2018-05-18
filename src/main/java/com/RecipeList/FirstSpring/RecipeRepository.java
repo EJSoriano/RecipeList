@@ -8,7 +8,7 @@ import java.util.*;
 public interface RecipeRepository extends JpaRepository<Recipe, Long>{
 
 	
-	Recipe findByRecipeName(String recipe_name);
+	List<Recipe> findByRecipeName(String recipe_name);
 	
 	
 }

@@ -20,7 +20,6 @@ public class Ingredient {
 	private Long id;
 	@Column(name = "ingredient_name")
 	@NotNull
-    @NaturalId
 	private String ingredientName;
 	@ManyToMany(fetch = FetchType.LAZY, 
 			cascade = { CascadeType.PERSIST, CascadeType.MERGE }, 
@@ -34,11 +33,11 @@ public class Ingredient {
 		this.ingredientName = ingredient_name;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
