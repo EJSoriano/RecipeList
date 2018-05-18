@@ -2,17 +2,7 @@ package com.RecipeList.FirstSpring;
 
 import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "recipe")
@@ -22,33 +12,28 @@ public class Recipe {
 	@Column(name = "recipe_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	@Column(name = "recipe_name")
-	private String recipeName;
-	@ManyToMany(fetch = FetchType.LAZY, 
-		cascade = {
-	        CascadeType.PERSIST,
-	        CascadeType.MERGE
-        })
-    @JoinTable(name = "recipe_ingredients", 
-    	joinColumns = @JoinColumn(name = "ingredient_id"), 
-    	inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-	private List<Ingredient> ingredients = new ArrayList<>();
+	@Column(name = "recipe_name", unique = true, nullable = false)
+	private String name;
+	
+	@OneToMany(fetch = FetchType.LAZY, 
+		cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+		mappedBy = "recipe")
+	private List<RecipeIngredient> ingredients = new ArrayList<>();
 
 	protected Recipe() {
 	}
 
 	public Recipe(String name) {
-		this.recipeName = name;
+		this.name = name;
 	}
 
-	public String getRecipeName() {
-		return recipeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setRecipeName(String name) {
-		this.recipeName = name;
+	public void setName(String name) {
+		this.name = name;
 	}
-
 
 	public long getId() {
 		return id;
@@ -58,30 +43,27 @@ public class Recipe {
 		this.id = recipe_id;
 	}
 
-	public void removeIngredients(Ingredient ingredient) {
+	public void removeIngredients(RecipeIngredient ingredient) {
 		if (ingredients.contains(ingredient)) {
 			ingredients.remove(ingredient);
 		}
 	}
 
-	public void addIngredients(Ingredient ingredient) {
+	public void addIngredients(RecipeIngredient ingredient) {
 		if (!ingredients.contains(ingredient)) {
 			ingredients.add(ingredient);
 		}
 	}
 
-    public List<Ingredient> getIngredients() {
+    public List<RecipeIngredient> getIngredients() {
         return ingredients;
     }
     
-	public void setIngredients(List<Ingredient> ingredients) {
-		this.ingredients = ingredients;
-	}
 	
 	@Override
 	public String toString() {
-		String result = String.format("Name: %s[%d]\nIngredients:\n", recipeName, id);
-		for(Ingredient ing : ingredients) {
+		String result = String.format("Name: %s[%d]\nIngredients:\n", name, id);
+		for(RecipeIngredient ing : ingredients) {
 			result += String.format("%s\n", ing.toString());
 		}
 		return result;
