@@ -15,7 +15,7 @@ public class Recipe {
 	@Column(name = "recipe_name", unique = true, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, 
+	@OneToMany(fetch = FetchType.LAZY,
 		cascade = {CascadeType.PERSIST, CascadeType.MERGE},
 		mappedBy = "recipe")
 	private List<RecipeIngredient> ingredients = new ArrayList<>();
@@ -68,4 +68,5 @@ public class Recipe {
 		}
 		return result;
 	}
+
 }

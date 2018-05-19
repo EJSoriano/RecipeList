@@ -11,17 +11,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
+
 @RestController
 public class RecipeController {
 
 	@Autowired
-	private RecipeRepository recRepo;
+	private RecipeRepository recipeRepository;
 
 	@Autowired
-	private IngredientRepository ingRepo;
+	private IngredientRepository ingredientRepository;
 
 	@Autowired
-	private RecipeIngredientRepository riRepo;
+	private RecipeIngredientRepository recipeIngredientRepository;
 
 	public RecipeController() {
 	}
@@ -30,27 +36,27 @@ public class RecipeController {
 	@RequestMapping(value = "/recipes", method = RequestMethod.GET)
 	public List<Recipe> recipes(@RequestParam(value = "name", required = false) String name) {
 		if (name == null)
-			return recRepo.findAll();
+			return recipeRepository.findAll();
 		else
-			return recRepo.findByName(name);
+			return recipeRepository.findByName(name);
 	}
 
 	// View ID
 	@RequestMapping("/recipes/{id}")
 	public Optional<Recipe> recipeByID(@PathVariable long id) {
-		return recRepo.findById(id);
+		return recipeRepository.findById(id);
 	}
 
 	// Create recipe
 	@RequestMapping(value = "/recipes", method = RequestMethod.POST)
 	public void create(@RequestBody Recipe recipe) {
-		recRepo.save(recipe);
+		recipeRepository.save(recipe);
 	}
 
 	// View ingredients
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.GET)
 	public List<RecipeIngredient> recipeIngredients(@PathVariable long id) {
-		Optional<Recipe> check = recRepo.findById(id);
+		Optional<Recipe> check = recipeRepository.findById(id);
 		if (check.isPresent()) {
 			Recipe recipe = check.get();
 			return recipe.getIngredients();
@@ -60,51 +66,44 @@ public class RecipeController {
 
 	// Add ingredient
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.PUT)
-	public void addIngredient(@PathVariable long id, @RequestBody long ingredientId, String quantity) {
-		Optional<Recipe> checkRec = recRepo.findById(id);
-		Optional<Ingredient> checkIng = ingRepo.findById(ingredientId);
+	public void addIngredient(@PathVariable long id, long ingredientId, String quantity) {
+		Optional<Recipe> checkRec = recipeRepository.findById(id);
+		Optional<Ingredient> checkIng = ingredientRepository.findById(ingredientId);
 		if (checkRec.isPresent()) {
 			Recipe recipe = checkRec.get();
 			if (checkIng.isPresent()) {
+
 				RecipeIngredient ri = new RecipeIngredient();
 				ri.setQuantity(quantity);
-				//WIP
-				recipe.addIngredient(ingredient);
-				recRepo.save(recipe);
+				ri.setIngredient(checkIng.get());
+				ri.setRecipe(checkRec.get());
+
+				Ingredient ingredient = checkIng.get();
+				ingredient.addRecipe(ri);
+				recipe.addIngredient(ri);
+				recipeRepository.save(recipe);
 			}
 		}
 
 	}
 
-	// Delete ingredient from recipe
+//	// Delete ingredient from recipe
+	@Transactional
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.DELETE)
 	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
-		Optional<Recipe> checkRec = recRepo.findById(id);
-		if (checkRec.isPresent()) {
-			Recipe recipe = checkRec.get();
-			for (Long ingID : ingList) {
-				Optional<Ingredient> checkIng = ingRepo.findById(ingID);
-				if (checkIng.isPresent()) {
-					Optional<RecipeIngredient> matches = riRepo.findById(ingID);
-					if(matches.isPresent()) {
-						
-					}
-					recRepo.save(recipe);
-				}
 
-			}
-		}
+		ingList.stream().forEach(ingredientId -> recipeIngredientRepository.delete(id, ingredientId));
 
 	}
 
 	// Update recipe name
 	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.PUT)
 	public void updateName(@PathVariable long id, @RequestBody Recipe newRec) {
-		Optional<Recipe> checkRec = recRepo.findById(id);
+		Optional<Recipe> checkRec = recipeRepository.findById(id);
 		if (checkRec.isPresent()) {
 			Recipe oldRec = checkRec.get();
 			oldRec.setName(newRec.getName());
-			recRepo.save(oldRec);
+			recipeRepository.save(oldRec);
 		}
 	}
 
@@ -113,7 +112,7 @@ public class RecipeController {
 	// Delete by id
 	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.DELETE)
 	public void deleteRecipe(@PathVariable long id) {
-		recRepo.deleteById(id);
+		recipeRepository.deleteById(id);
 	}
 
 }
