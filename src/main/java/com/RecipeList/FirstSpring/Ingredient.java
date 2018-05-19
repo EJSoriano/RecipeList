@@ -22,8 +22,8 @@ public class Ingredient {
 	@NotNull
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, 
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE }, 
+	@OneToMany(fetch = FetchType.LAZY,
+			cascade = { CascadeType.PERSIST, CascadeType.MERGE},
 			mappedBy = "ingredient")
 	private List<RecipeIngredient> recipes = new ArrayList<>();
 
@@ -59,6 +59,12 @@ public class Ingredient {
 	public List<RecipeIngredient> getRecipes() {
 		return recipes;
 	}
+
+    public void removeRecipe(RecipeIngredient ingredient) {
+        if (recipes.contains(ingredient)) {
+            recipes.remove(ingredient);
+        }
+    }
 
 	@Override
 	public String toString() {
