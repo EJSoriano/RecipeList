@@ -66,34 +66,32 @@ public class RecipeController {
 
 	// Add ingredient
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.PUT)
-	public void addIngredient(@PathVariable long id, long ingredientId, String quantity) {
+	public void addIngredient(@PathVariable long id, @RequestBody List<RecipeIngredientWrapper> ingList) {
 		Optional<Recipe> checkRec = recipeRepository.findById(id);
-		Optional<Ingredient> checkIng = ingredientRepository.findById(ingredientId);
 		if (checkRec.isPresent()) {
 			Recipe recipe = checkRec.get();
-			if (checkIng.isPresent()) {
-
-				RecipeIngredient ri = new RecipeIngredient();
-				ri.setQuantity(quantity);
-				ri.setIngredient(checkIng.get());
-				ri.setRecipe(checkRec.get());
-
-				Ingredient ingredient = checkIng.get();
-				ingredient.addRecipe(ri);
-				recipe.addIngredient(ri);
-				recipeRepository.save(recipe);
+			for (RecipeIngredientWrapper ing : ingList) {
+				Optional<Ingredient> checkIng = ingredientRepository.findById(ing.getIngredientID());
+				if (checkIng.isPresent()) {
+					Ingredient ingredient = checkIng.get();
+					RecipeIngredient ri = new RecipeIngredient();
+					ri.setQuantity(ing.getQuantity());
+					ri.setIngredient(ingredient);
+					ri.setRecipe(recipe);
+	
+					ingredient.addRecipe(ri);
+					recipe.addIngredient(ri);
+					recipeRepository.save(recipe);
+				}
 			}
 		}
-
 	}
 
-//	// Delete ingredient from recipe
+	// // Delete ingredient from recipe
 	@Transactional
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.DELETE)
 	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
-
 		ingList.stream().forEach(ingredientId -> recipeIngredientRepository.delete(id, ingredientId));
-
 	}
 
 	// Update recipe name

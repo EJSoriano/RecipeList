@@ -28,15 +28,7 @@ public class RecipeIngredient {
 
 	public RecipeIngredient() {
 	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
+	
 	@JsonIgnore
 	public Recipe getRecipe() {
 		return recipe;
@@ -45,6 +37,7 @@ public class RecipeIngredient {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
+	
 	@JsonIgnore
 	public Ingredient getIngredient() {
 		return ingredient;
@@ -64,6 +57,10 @@ public class RecipeIngredient {
 
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
+	}
+
+	public Long getId() {
+		return ingredient.getId();
 	}
 
 	@Override
