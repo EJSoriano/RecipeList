@@ -21,7 +21,7 @@ public class IngredientController {
 		if (name == null)
 			return ingRepo.findAll();
 		else
-			return ingRepo.findByIngredientName(name);
+			return ingRepo.findByName(name);
 	}
 
 	// View ID
@@ -49,7 +49,8 @@ public class IngredientController {
 
 	// Delete by id
 	@RequestMapping(value = "/ingredients/{id}", method = RequestMethod.DELETE)
-	public void deleteIngredient(@PathVariable long id) {
-		ingRepo.deleteById(id);
+	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
+		for (long ingID : ingList)
+			ingRepo.deleteById(ingID);
 	}
 }

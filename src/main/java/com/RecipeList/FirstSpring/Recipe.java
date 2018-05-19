@@ -43,13 +43,13 @@ public class Recipe {
 		this.id = recipe_id;
 	}
 
-	public void removeIngredients(RecipeIngredient ingredient) {
+	public void removeIngredient(RecipeIngredient ingredient) {
 		if (ingredients.contains(ingredient)) {
 			ingredients.remove(ingredient);
 		}
 	}
 
-	public void addIngredients(RecipeIngredient ingredient) {
+	public void addIngredient(RecipeIngredient ingredient) {
 		if (!ingredients.contains(ingredient)) {
 			ingredients.add(ingredient);
 		}

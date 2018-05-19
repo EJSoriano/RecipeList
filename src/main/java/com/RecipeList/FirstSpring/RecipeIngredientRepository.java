@@ -7,5 +7,5 @@ import java.util.*;
 @Repository
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
 
-	
+//	List<RecipeIngredient> findBy
 }

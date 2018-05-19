@@ -34,9 +34,17 @@ public class RecipeIngredient {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
-	
+	@JsonIgnore
 	public Ingredient getIngredient() {
 		return ingredient;
+	}
+	
+	public long getId() {
+		return ingredient.getId();
+	}
+	
+	public String getName() {
+		return ingredient.getName();
 	}
 
 	public void setIngredient(Ingredient ingredient) {

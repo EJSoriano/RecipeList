@@ -32,7 +32,7 @@ public class RecipeController {
 		if (name == null)
 			return recRepo.findAll();
 		else
-			return recRepo.findByRecipeName(name);
+			return recRepo.findByName(name);
 	}
 
 	// View ID
@@ -60,13 +60,16 @@ public class RecipeController {
 
 	// Add ingredient
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.PUT)
-	public void addIngredient(@PathVariable long id, @RequestBody RecipeIngredient ingredient) {
+	public void addIngredient(@PathVariable long id, @RequestBody long ingredientId, String quantity) {
 		Optional<Recipe> checkRec = recRepo.findById(id);
-		Optional<Ingredient> checkIng = ingRepo.findById(ingredient.getIngredient().getId());
+		Optional<Ingredient> checkIng = ingRepo.findById(ingredientId);
 		if (checkRec.isPresent()) {
 			Recipe recipe = checkRec.get();
 			if (checkIng.isPresent()) {
-				recipe.addIngredients(ingredient);
+				RecipeIngredient ri = new RecipeIngredient();
+				ri.setQuantity(quantity);
+				//WIP
+				recipe.addIngredient(ingredient);
 				recRepo.save(recipe);
 			}
 		}
@@ -75,14 +78,20 @@ public class RecipeController {
 
 	// Delete ingredient from recipe
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.DELETE)
-	public void deleteIngredient(@PathVariable long id, @RequestBody RecipeIngredient ingredient) {
+	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
 		Optional<Recipe> checkRec = recRepo.findById(id);
-		Optional<Ingredient> checkIng = ingRepo.findById(ingredient.getIngredient().getId());
 		if (checkRec.isPresent()) {
 			Recipe recipe = checkRec.get();
-			if (checkIng.isPresent()) {
-				recipe.removeIngredients(ingredient);
-				recRepo.save(recipe);
+			for (Long ingID : ingList) {
+				Optional<Ingredient> checkIng = ingRepo.findById(ingID);
+				if (checkIng.isPresent()) {
+					Optional<RecipeIngredient> matches = riRepo.findById(ingID);
+					if(matches.isPresent()) {
+						
+					}
+					recRepo.save(recipe);
+				}
+
 			}
 		}
 
@@ -98,11 +107,11 @@ public class RecipeController {
 			recRepo.save(oldRec);
 		}
 	}
-	
+
 	// Update recipe ingredients
 
 	// Delete by id
-	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.DELETE)
 	public void deleteRecipe(@PathVariable long id) {
 		recRepo.deleteById(id);
 	}
