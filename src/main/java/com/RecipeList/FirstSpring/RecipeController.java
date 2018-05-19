@@ -94,22 +94,6 @@ public class RecipeController {
 
 		ingList.stream().forEach(ingredientId -> recipeIngredientRepository.delete(id, ingredientId));
 
-//		Optional<Recipe> checkRec = recipeRepository.findById(id);
-//		if (checkRec.isPresent()) {
-//			Recipe recipe = checkRec.get();
-//			for (Long ingID : ingList) {
-//				Optional<Ingredient> checkIng = ingredientRepository.findById(ingID);
-//				if (checkIng.isPresent()) {
-//					Ingredient ingredient = checkIng.get();
-//					RecipeIngredient recipeIngredient = new RecipeIngredient();
-//					recipeIngredient.setRecipe(recipe);
-//					recipeIngredient.setIngredient(ingredient);
-//					recipeIngredientRepository.delete(recipeIngredient);
-//				}
-//
-//			}
-//		}
-
 	}
 
 	// Update recipe name
