@@ -11,7 +11,7 @@ import org.hibernate.annotations.NaturalId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "ingredient")
+@Table(name = "ingredients")
 public class Ingredient {
 
 	@Id
@@ -23,7 +23,7 @@ public class Ingredient {
 	private String name;
 	
 	@OneToMany(fetch = FetchType.LAZY,
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE},
+			cascade = { CascadeType.PERSIST, CascadeType.MERGE },
 			mappedBy = "ingredient")
 	private List<RecipeIngredient> recipes = new ArrayList<>();
 

@@ -20,17 +20,19 @@ import javax.transaction.Transactional;
 @RestController
 public class RecipeController {
 
-	@Autowired
 	private RecipeRepository recipeRepository;
 
-	@Autowired
 	private IngredientRepository ingredientRepository;
 
-	@Autowired
 	private RecipeIngredientRepository recipeIngredientRepository;
 
-	public RecipeController() {
-	}
+    @Autowired
+    public RecipeController(RecipeRepository recipeRepository, IngredientRepository ingredientRepository,
+                            RecipeIngredientRepository recipeIngredientRepository) {
+        this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.recipeIngredientRepository = recipeIngredientRepository;
+    }
 
 	// View/Search Recipes
 	@RequestMapping(value = "/recipes", method = RequestMethod.GET)
@@ -67,21 +69,20 @@ public class RecipeController {
 	// Add ingredient
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.PUT)
 	public void addIngredient(@PathVariable long id, @RequestBody List<RecipeIngredientWrapper> ingList) {
-		Optional<Recipe> checkRec = recipeRepository.findById(id);
-		if (checkRec.isPresent()) {
-			Recipe recipe = checkRec.get();
+		Optional<Recipe> recipe = recipeRepository.findById(id);
+		if (recipe.isPresent()) {
 			for (RecipeIngredientWrapper ing : ingList) {
 				Optional<Ingredient> checkIng = ingredientRepository.findById(ing.getIngredientID());
 				if (checkIng.isPresent()) {
 					Ingredient ingredient = checkIng.get();
-					RecipeIngredient ri = new RecipeIngredient();
-					ri.setQuantity(ing.getQuantity());
-					ri.setIngredient(ingredient);
-					ri.setRecipe(recipe);
+					RecipeIngredient recipeIngredient = new RecipeIngredient();
+					recipeIngredient.setQuantity(ing.getQuantity());
+					recipeIngredient.setIngredient(ingredient);
+					recipeIngredient.setRecipe(recipe.get());
 	
-					ingredient.addRecipe(ri);
-					recipe.addIngredient(ri);
-					recipeRepository.save(recipe);
+					ingredient.addRecipe(recipeIngredient);
+					recipe.get().addIngredient(recipeIngredient);
+					recipeRepository.save(recipe.get());
 				}
 			}
 		}
@@ -90,11 +91,12 @@ public class RecipeController {
 	// // Delete ingredient from recipe
 	@Transactional
 	@RequestMapping(value = "/recipes/{id}/ingredients", method = RequestMethod.DELETE)
-	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
-		ingList.stream().forEach(ingredientId -> recipeIngredientRepository.delete(id, ingredientId));
+	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingredientIds) {
+		recipeIngredientRepository.delete(id, ingredientIds);
 	}
 
 	// Update recipe name
+    @Transactional
 	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.PUT)
 	public void updateName(@PathVariable long id, @RequestBody Recipe newRec) {
 		Optional<Recipe> checkRec = recipeRepository.findById(id);
