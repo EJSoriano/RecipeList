@@ -22,4 +22,15 @@ public class RecipeIngredientWrapper {
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
+
+	public RecipeIngredientWrapper withIngredientId(long ingredientID) {
+		this.ingredientID = ingredientID;
+		return this;
+	}
+
+	public RecipeIngredientWrapper withQuantity(String quantity) {
+		this.quantity = quantity;
+		return this;
+	}
+
 }

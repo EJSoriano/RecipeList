@@ -3,6 +3,7 @@ package com.RecipeList.FirstSpring;
 import java.util.List;
 import java.util.Optional;
 
+import com.RecipeList.FirstSpring.exception.ItemDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class IngredientController {
 	
 	@Autowired
-	private IngredientRepository ingRepo;
+	private IngredientRepository ingredientRepository;
 
 	public IngredientController() {
 	}
@@ -19,38 +20,41 @@ public class IngredientController {
 	@RequestMapping(value = "/ingredients", method = RequestMethod.GET)
 	public List<Ingredient> ingredients(@RequestParam(value = "name", required = false) String name) {
 		if (name == null)
-			return ingRepo.findAll();
+			return ingredientRepository.findAll();
 		else
-			return ingRepo.findByName(name);
+			return ingredientRepository.findByName(name);
 	}
 
 	// View ID
 	@RequestMapping(value = "/ingredients/{id}", method = RequestMethod.GET)
 	public Optional<Ingredient> ingredientByID(@PathVariable long id) {
-		return ingRepo.findById(id);
+		return ingredientRepository.findById(id);
 	}
 
 	// Create ingredient
 	@RequestMapping(value = "/ingredients", method = RequestMethod.POST)
-	public void create(@RequestBody Ingredient ingredient) {
-		ingRepo.save(ingredient);
+	public Ingredient create(@RequestBody Ingredient ingredient) {
+
+		return ingredientRepository.save(ingredient);
+
 	}
 
 	// Update
 	@RequestMapping(value = "/ingredients/{id}", method = RequestMethod.PUT)
-	public void update(@PathVariable long id, @RequestBody Ingredient updatedIng) {
+	public Ingredient update(@PathVariable long id, @RequestBody Ingredient updatedIng) {
 		Optional<Ingredient> ing = ingredientByID(id);
 		if(ing.isPresent()) {
 			Ingredient currentIngredient = ing.get();
 			updatedIng.setId(currentIngredient.getId());
-			ingRepo.save(updatedIng);
+			return ingredientRepository.save(updatedIng);
 		}
+		throw new ItemDoesNotExistException("Ingredient", id);
+
 	}
 
-	// Delete by id
 	@RequestMapping(value = "/ingredients/{id}", method = RequestMethod.DELETE)
-	public void deleteIngredient(@PathVariable long id, @RequestBody List<Long> ingList) {
+	public void deleteIngredientById(@PathVariable long id, @RequestBody List<Long> ingList) {
 		for (long ingID : ingList)
-			ingRepo.deleteById(ingID);
+			ingredientRepository.deleteById(ingID);
 	}
 }
